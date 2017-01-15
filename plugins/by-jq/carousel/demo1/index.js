@@ -17,6 +17,12 @@
         autoMoveInterval: null,
         //定时器速度
         intervalSpeed: 3000,
+        //正在移动
+        isMove: false,
+        isReplace: false,
+        isMouseIn: false,
+        /**jq节点*/
+        $carousel: $('#carousel'),
         $carouselPicList: $('#carouselPicList'),
         $carouselIndexList: $('#carouselIndexList')
     };
@@ -33,6 +39,9 @@
         },
         initEvent: function () {
             this.autoMove();
+            this.stopAutoMove();
+            this.continueAutoMove();
+            // this.clickIndexPoint();
         },
         /**生成图片节点*/
         ganeratePicNodes: function () {
@@ -86,6 +95,8 @@
         },
         /**移动到右图*/
         moveToRightPicture: function() {
+            //
+            // caches.isMove = true;
             //记录当前位置信息
             this.record(caches.currentIndex + 1, caches.currentTranslateXValue - caches.screenWidth);
             //移动到右图
@@ -97,6 +108,7 @@
 
             //如果移动到了最后一张图片
             if (caches.currentIndex === caches.url.length + 1) {
+                caches.isReplace = true;
                 //停止自动移动
                 clearInterval(caches.autoMoveInterval);
                 //偷梁换柱
@@ -115,12 +127,18 @@
                         });
                         clearTimeout(restoreTranslateTimeout);
                         clearTimeout(restoreTransitionTimeout);
+                        //鼠标移入禁止移动
+                        if (caches.isMouseIn) {
+                            //替换完成
+                            caches.isReplace = false;
+                            return ;
+                        }
                         //移动到右图
                         carousel.moveToRightPicture();
                         //重新自动移动
-                        caches.autoMoveInterval = setInterval(function() {
-                            carousel.moveToRightPicture();
-                        }, caches.intervalSpeed);
+                        carousel.autoMove();
+                        //替换完成
+                        caches.isReplace = false;
                     }, 1);
                 }, caches.intervalSpeed);
             }
@@ -150,6 +168,28 @@
             //激活当前索引
             caches.$carouselIndexList.find('li').attr('class', 'carousel-indexitem').each(function(index) {
                 if (index + 1 == caches.currentIndex) $(this).attr('class', 'carousel-indexitem-active');
+            });
+        },
+        /**鼠标移入静止移动*/
+        stopAutoMove: function() {
+            caches.$carousel.on('mouseenter', function () {
+                clearInterval(caches.autoMoveInterval);
+                caches.isMouseIn = true;
+            });
+        },
+        /**鼠标移除自动移动*/
+        continueAutoMove: function () {
+            caches.$carousel.on('mouseleave', function () {
+                caches.isMouseIn = false;
+                if (caches.isReplace) return ;
+                carousel.autoMove();
+            });
+        },
+        /**点击索引*/
+        clickIndexPoint: function() {
+            caches.$carouselIndexList.on('click', 'li', function(event) {
+                 caches.currentIndex = $(event.target).attr('data-index');
+                 carousel.changeActiveIndexPoint();
             });
         }
     };
