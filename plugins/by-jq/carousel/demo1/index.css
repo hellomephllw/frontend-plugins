@@ -1,0 +1,50 @@
+body {
+    height: 1200px;
+}
+
+.carousel {
+    position: relative;
+}
+
+.carousel-piclist {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.5s linear;
+}
+
+.carousel-picitem {
+    float: left;
+    height: 700px;
+    background-repeat: no-repeat;
+    background-position: top center;
+    list-style: none;
+}
+
+.carousel-indexlist {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    width: 60px;
+    margin: 0 0 0 -23px;
+    padding: 0;
+}
+
+.carousel-indexitem,
+.carousel-indexitem-active {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    border-radius: 50%;
+    list-style: none;
+    cursor: pointer;
+}
+
+.carousel-indexitem {
+    background: blue;
+}
+
+.carousel-indexitem-active {
+    background: white;
+}
