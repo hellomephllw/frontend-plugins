@@ -137,7 +137,7 @@
                         caches.$carouselPicList.css({
                             transition: 'transform ' + caches.moveSpeed + 's linear'
                         });
-                    }, 1);
+                    }, 50);//不同浏览器需要设置的时间不同，50可以保证满足所有浏览器
                     //完成图片替换
                     caches.isReplaceImage = false;
                     //替换后再次移动
